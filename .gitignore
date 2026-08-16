@@ -1,0 +1,23 @@
+# 作業メモ・DNS関連（リポジトリはPublicのため絶対に含めない）
+_dns-backup-*.md
+配管確認/
+作業メモ/
+*.private.md
+
+# ローカル設定
+.claude/settings.local.json
+
+# macOS
+.DS_Store
+
+# Node / Astro
+node_modules/
+dist/
+.astro/
+*.log
+npm-debug.log*
+
+# 環境変数
+.env
+.env.*
+!.env.example
