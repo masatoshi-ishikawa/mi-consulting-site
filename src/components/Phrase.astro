@@ -1,0 +1,16 @@
+---
+import { phrase } from '../lib/budoux';
+
+interface Props {
+  /** 文節分割したい日本語テキスト */
+  text: string;
+  class?: string;
+  /** 全角ダッシュ（——）の直後で必ず改行する */
+  breakAfterDash?: boolean;
+}
+
+const { text, class: className, breakAfterDash = false } = Astro.props;
+---
+
+{/* .phrase の word-break: keep-all とセットで機能する（src/styles/global.css 参照） */}
+<span class:list={['phrase', className]} set:html={phrase(text, breakAfterDash)} />

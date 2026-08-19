@@ -1,0 +1,368 @@
+/*
+ * サイト全体のスタイル。
+ * 色とフォントはここの custom property だけを差し替えれば全体が変わる。
+ */
+
+:root {
+  /* 色 ------------------------------------------------------- */
+  --c-bg: #ffffff;
+  --c-bg-subtle: #f7f6f3;
+  --c-text: #1c1f26;
+  --c-text-muted: #5f6672;
+  --c-text-faint: #8a909b;
+  --c-accent: #1e3d59;
+  --c-accent-hover: #2d5679;
+  --c-border: #e2e0da;
+  --c-border-strong: #c9c6bd;
+
+  /* フォント --------------------------------------------------- */
+  --font-sans:
+    "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Noto Sans JP",
+    -apple-system, BlinkMacSystemFont, "Segoe UI", Meiryo, sans-serif;
+  --font-serif:
+    "Hiragino Mincho ProN", "Yu Mincho", YuMincho, "Noto Serif JP",
+    "Times New Roman", serif;
+
+  /* ヘッダーの屋号と、トップの自己紹介の名前で共有するサイズ */
+  --fs-brand: 1.28rem;
+  --fs-brand-sp: 1.05rem;
+
+  /* 寸法 ------------------------------------------------------- */
+  --w-page: 68rem;
+  --w-prose: 42rem;
+  --space-section: 5rem;
+
+  color-scheme: light;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--c-bg);
+  color: var(--c-text);
+  font-family: var(--font-sans);
+  font-size: 1rem;
+  line-height: 1.9;
+  font-feature-settings: "palt" 1;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  /*
+   * auto-phrase はChromeとEdgeのみ対応。BudouXを当てていない箇所の
+   * 保険として残す（未対応ブラウザは無視するので害はない）。
+   * line-break: strict は禁則処理を厳格側に寄せる。
+   */
+  word-break: auto-phrase;
+  line-break: strict;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+main {
+  flex: 1;
+}
+
+/* 見出しは明朝。本文はゴシック。 --------------------------------- */
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--font-serif);
+  font-weight: 600;
+  line-height: 1.5;
+  letter-spacing: 0.02em;
+  margin: 0;
+  /* 見出しは各行の長さを揃える。1行だけ極端に短くなるのを防ぐ */
+  text-wrap: balance;
+}
+
+h1 {
+  font-size: clamp(1.6rem, 1.2rem + 1.6vw, 2.2rem);
+}
+
+h2 {
+  font-size: clamp(1.3rem, 1.1rem + 0.9vw, 1.65rem);
+}
+
+h3 {
+  font-size: 1.15rem;
+}
+
+p {
+  margin: 0 0 1.4em;
+}
+
+a {
+  color: var(--c-accent);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.22em;
+  transition: color 0.15s ease;
+}
+
+a:hover {
+  color: var(--c-accent-hover);
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+hr {
+  border: 0;
+  border-top: 1px solid var(--c-border);
+  margin: 3rem 0;
+}
+
+ul,
+ol {
+  padding-left: 1.4em;
+}
+
+li {
+  margin-bottom: 0.5em;
+}
+
+blockquote {
+  margin: 2rem 0;
+  padding: 0.2rem 0 0.2rem 1.4rem;
+  border-left: 3px solid var(--c-border-strong);
+  color: var(--c-text-muted);
+}
+
+code {
+  font-size: 0.9em;
+  background: var(--c-bg-subtle);
+  padding: 0.15em 0.4em;
+  border-radius: 3px;
+}
+
+pre {
+  padding: 1rem 1.2rem;
+  border-radius: 4px;
+  overflow-x: auto;
+  border: 1px solid var(--c-border);
+}
+
+pre code {
+  background: none;
+  padding: 0;
+}
+
+/*
+ * 表は table-scroll で包んで横スクロールさせる（プラグインが自動で包む）。
+ * min-width があるため、狭い画面では列が潰れずに横スクロールに切り替わる。
+ *
+ * 背景の4枚重ねは、スクロールできることを示す影を出すための定番手法。
+ * background-attachment の local と scroll の違いを利用していて、
+ * 白いカバー（local）は中身と一緒に動き、影（scroll）は枠に固定される。
+ * 端まで送ると白いカバーが影に重なって消えるので、
+ * 「まだ続きがある側だけ影が出る」という挙動になる。JavaScriptは不要。
+ *
+ * カバーは影の幅（1.1rem）ぶんを完全な不透明で塗ってから薄くする。
+ * 端から徐々に薄くすると影を覆いきれず、スクロール不要なとき
+ * （PC表示など）にも影がうっすら残ってしまう。
+ */
+.table-scroll {
+  margin: 2rem 0;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  background:
+    linear-gradient(to right, var(--c-bg) 0, var(--c-bg) 1.3rem, rgba(255, 255, 255, 0) 2.5rem) left center,
+    linear-gradient(to left, var(--c-bg) 0, var(--c-bg) 1.3rem, rgba(255, 255, 255, 0) 2.5rem) right center,
+    radial-gradient(farthest-side at 0 50%, rgba(28, 31, 38, 0.24), rgba(28, 31, 38, 0)) left center,
+    radial-gradient(farthest-side at 100% 50%, rgba(28, 31, 38, 0.24), rgba(28, 31, 38, 0)) right center;
+  background-repeat: no-repeat;
+  background-size:
+    2.5rem 100%,
+    2.5rem 100%,
+    1.1rem 100%,
+    1.1rem 100%;
+  background-attachment: local, local, scroll, scroll;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 2rem 0;
+  font-size: 0.95rem;
+}
+
+.table-scroll table {
+  margin: 0;
+  min-width: 34rem;
+  /* 内容量に引きずられず列幅を制御する（片方だけ極端に広くなるのを防ぐ） */
+  table-layout: fixed;
+}
+
+/*
+ * 3列の表は、最終列に説明文が入ることが多いので広めに取る。
+ * 2列や4列以上の表は均等割りのまま。
+ */
+.table-scroll table tr > *:first-child:nth-last-child(3) {
+  width: 26%;
+}
+
+.table-scroll table tr > *:first-child:nth-last-child(3) ~ * {
+  width: 37%;
+}
+
+.table-scroll table tr > *:first-child:nth-last-child(3) ~ *:last-child {
+  width: 37%;
+}
+
+.table-scroll th {
+  white-space: nowrap;
+}
+
+th,
+td {
+  border: 1px solid var(--c-border);
+  padding: 0.6rem 0.9rem;
+  text-align: left;
+}
+
+th {
+  background: var(--c-bg-subtle);
+  font-weight: 600;
+}
+
+/* 汎用レイアウト ------------------------------------------------ */
+.container {
+  width: 100%;
+  max-width: var(--w-page);
+  margin-inline: auto;
+  padding-inline: 1.5rem;
+}
+
+.prose {
+  max-width: var(--w-prose);
+}
+
+.section {
+  padding-block: var(--space-section);
+}
+
+.section + .section {
+  padding-top: 0;
+}
+
+/* 文節区切りの改行（BudouX） --------------------------------- */
+/*
+ * BudouXが文節の切れ目に入れた <wbr> と必ずセットで使う。
+ * keep-all が日本語の通常の改行を止め、<wbr> の位置だけが改行可能として
+ * 残ることで、語の途中で切れなくなる。全ブラウザで同じ結果になる。
+ * overflow-wrap: anywhere は、1文節が表示幅を超えた場合の安全弁。
+ */
+.phrase {
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+}
+
+/* 保護語の折り返し禁止（記事本文） --------------------------- */
+/*
+ * 記事本文は文節改行を当てていない（長文だと右端が波打つため）。
+ * 代わりに「という」「として」などの語だけを、この class で
+ * 途中改行させないようにしている。プラグインが自動で付与する。
+ */
+.nobr {
+  white-space: nowrap;
+}
+
+/* 補助テキスト -------------------------------------------------- */
+.muted {
+  color: var(--c-text-muted);
+}
+
+.eyebrow {
+  font-family: var(--font-sans);
+  font-size: 0.78rem;
+  letter-spacing: 0.14em;
+  color: var(--c-text-faint);
+  text-transform: uppercase;
+  margin: 0 0 0.6rem;
+}
+
+/* ボタン -------------------------------------------------------- */
+.button {
+  display: inline-block;
+  padding: 0.75rem 1.8rem;
+  background: var(--c-accent);
+  color: #fff;
+  text-decoration: none;
+  border-radius: 2px;
+  font-size: 0.95rem;
+  letter-spacing: 0.04em;
+  transition: background 0.15s ease;
+}
+
+.button:hover {
+  background: var(--c-accent-hover);
+  color: #fff;
+}
+
+.button--ghost {
+  background: transparent;
+  color: var(--c-accent);
+  border: 1px solid var(--c-border-strong);
+}
+
+.button--ghost:hover {
+  background: var(--c-bg-subtle);
+  color: var(--c-accent);
+}
+
+/* 読み上げのみ -------------------------------------------------- */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+@media (max-width: 640px) {
+  :root {
+    --space-section: 3.5rem;
+  }
+
+  body {
+    line-height: 1.85;
+  }
+
+  /*
+   * 狭い画面では見出しの均等化をやめる。
+   * balance は行の長さを揃えるため、幅が狭いと両方の行が短くなってしまう。
+   * 詰めて折り返したほうが1行あたりの文字数が増える。
+   * h1（ページ見出し・ヒーロー）は目立つ位置なので balance のまま残す。
+   */
+  h2,
+  h3,
+  h4 {
+    text-wrap: wrap;
+  }
+
+  /*
+   * 見出しを一段小さくして1行の文字数を稼ぐ。
+   * 本文16pxとの差は縮むが、明朝体・太さ600で見出しとしては十分に立つ。
+   * h2 > h3 > 本文 の順序は保つこと（入れ替わると階層が崩れる）。
+   */
+  h2 {
+    font-size: 1.2rem;
+  }
+
+  h3 {
+    font-size: 1.1rem;
+  }
+}

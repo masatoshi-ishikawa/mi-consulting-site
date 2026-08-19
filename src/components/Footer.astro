@@ -1,0 +1,71 @@
+---
+import { EMAIL, NAV_ITEMS, OFFICE_NAME } from '../consts';
+
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer">
+  <div class="container inner">
+    <nav aria-label="フッターナビゲーション">
+      <ul>
+        {NAV_ITEMS.map((item) => <li><a href={item.href}>{item.label}</a></li>)}
+      </ul>
+    </nav>
+
+    <p class="contact">
+      お問い合わせ：<a href={`mailto:${EMAIL}`}>{EMAIL}</a>
+    </p>
+
+    <p class="copyright">&copy; {year} {OFFICE_NAME}</p>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    margin-top: 4rem;
+    border-top: 1px solid var(--c-border);
+    background: var(--c-bg-subtle);
+  }
+
+  .inner {
+    padding-block: 2.5rem;
+  }
+
+  nav ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.4rem;
+    list-style: none;
+    margin: 0 0 1.6rem;
+    padding: 0;
+  }
+
+  nav li {
+    margin: 0;
+  }
+
+  nav a {
+    font-size: 0.88rem;
+    color: var(--c-text);
+    text-decoration: none;
+  }
+
+  nav a:hover {
+    color: var(--c-accent);
+  }
+
+  .contact {
+    font-size: 0.85rem;
+    margin: 0 0 0.8rem;
+    /* メールアドレスは途中で改行させない */
+    word-break: keep-all;
+    overflow-wrap: anywhere;
+  }
+
+  .copyright {
+    margin: 0;
+    font-size: 0.75rem;
+    color: var(--c-text-faint);
+    letter-spacing: 0.03em;
+  }
+</style>

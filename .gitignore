@@ -4,6 +4,9 @@ _dns-backup-*.md
 作業メモ/
 *.private.md
 
+# 原稿の元ファイル置き場（公開不要）
+_source/
+
 # ローカル設定
 .claude/settings.local.json
 

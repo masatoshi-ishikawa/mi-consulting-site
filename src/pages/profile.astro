@@ -1,0 +1,68 @@
+---
+import { getEntry, render } from 'astro:content';
+
+import Phrase from '../components/Phrase.astro';
+import Base from '../layouts/Base.astro';
+
+// 文章は src/content/pages/profile.md で管理する
+const page = await getEntry('pages', 'profile');
+const { Content } = await render(page!);
+const { title, description, lead } = page!.data;
+---
+
+<Base title={title} description={description}>
+  <div class="container prose page">
+    <h1>{title}</h1>
+
+    {lead && <p class="lead"><Phrase text={lead} /></p>}
+
+    <Content />
+
+    <p class="cta">
+      <a class="button" href="/service/">サービス案内を見る</a>
+    </p>
+  </div>
+</Base>
+
+<style>
+  .page {
+    padding-block: 3.5rem;
+  }
+
+  .lead {
+    font-family: var(--font-serif);
+    font-size: 1.15rem;
+    margin-top: 1.8rem;
+  }
+
+  /*
+   * 以下は markdown から生成される要素が対象のため :global が必要。
+   * （Astroのスコープ付きスタイルは生成物には当たらない）
+   */
+  .page :global(h2) {
+    margin-top: 3rem;
+    margin-bottom: 1.2rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--c-border);
+  }
+
+  .page :global(h3) {
+    margin-top: 2.2rem;
+    margin-bottom: 0.8rem;
+  }
+
+  /* 経歴の入れ子リスト */
+  .page :global(li > ul) {
+    margin-top: 0.5rem;
+    font-size: 0.92rem;
+    color: var(--c-text-muted);
+  }
+
+  .page :global(li) {
+    margin-bottom: 0.6rem;
+  }
+
+  .cta {
+    margin-top: 3.5rem;
+  }
+</style>

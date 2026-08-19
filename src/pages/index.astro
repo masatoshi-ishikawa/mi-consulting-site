@@ -1,0 +1,237 @@
+---
+import { getCollection, getEntry, render } from 'astro:content';
+
+import FormattedDate from '../components/FormattedDate.astro';
+import Base from '../layouts/Base.astro';
+import Phrase from '../components/Phrase.astro';
+
+// ヒーローと自己紹介の文章は src/content/pages/ のmarkdownで管理する
+const hero = await getEntry('pages', 'hero');
+const { Content: HeroContent } = await render(hero!);
+
+const intro = await getEntry('pages', 'intro');
+const { Content: IntroContent } = await render(intro!);
+
+const articles = (await getCollection('articles', ({ data }) => !data.draft))
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
+  .slice(0, 4);
+---
+
+<Base>
+  {/* ヘッダーが屋号とタグラインを担うため、ここでは繰り返さない */}
+  <section class="hero">
+    <div class="container hero__inner">
+      <div class="hero__text">
+        <h1><Phrase text={hero!.data.heading!} /></h1>
+        <div class="hero__lead"><HeroContent /></div>
+        <div class="hero__actions">
+          <a class="button" href="/service/">初回相談について</a>
+          <a class="button button--ghost" href="/articles/">記事を読む</a>
+        </div>
+      </div>
+
+      <div class="hero__figure">
+        <img
+          src="/images/photo.jpg"
+          alt="石川雅敏"
+          width="480"
+          height="640"
+          loading="eager"
+        />
+      </div>
+    </div>
+  </section>
+
+  <section class="section container">
+    <h2 class="intro__heading">自己紹介</h2>
+    <div class="intro">
+      <p class="intro__name">
+        {intro!.data.name}<span class="intro__credential"
+          >（{intro!.data.credential}）</span
+        >
+      </p>
+      <IntroContent />
+      <p class="intro__link">
+        <a href="/profile/">プロフィールを見る →</a>
+      </p>
+    </div>
+  </section>
+
+  {
+    articles.length > 0 && (
+      <section class="section container">
+        <p class="eyebrow">最近の記事</p>
+        <ul class="articles">
+          {articles.map((a) => (
+            <li>
+              <a href={`/articles/${a.id}/`}>
+                <span class="articles__title"><Phrase text={a.data.title} /></span>
+                <span class="articles__date muted">
+                  <FormattedDate date={a.data.pubDate} />
+                </span>
+              </a>
+            </li>
+          ))}
+        </ul>
+        <p><a href="/articles/">記事をすべて見る →</a></p>
+      </section>
+    )
+  }
+</Base>
+
+<style>
+  .hero {
+    background: var(--c-bg-subtle);
+    border-bottom: 1px solid var(--c-border);
+  }
+
+  .hero__inner {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 3rem;
+    align-items: center;
+    padding-block: 4.5rem;
+  }
+
+  .hero h1 {
+    font-size: clamp(1.35rem, 1.05rem + 1.3vw, 1.85rem);
+    line-height: 1.75;
+    margin-bottom: 1.6rem;
+    max-width: 34rem;
+  }
+
+  .hero__lead {
+    margin-bottom: 2rem;
+    max-width: 38rem;
+  }
+
+  /* markdown から生成される <p> が対象のため :global が必要 */
+  .hero__lead :global(p) {
+    color: var(--c-text-muted);
+    font-size: 0.95rem;
+    margin-bottom: 0;
+  }
+
+  .hero__lead :global(p + p) {
+    margin-top: 1.2rem;
+  }
+
+  .hero__actions {
+    display: flex;
+    gap: 0.9rem;
+    flex-wrap: wrap;
+  }
+
+  /* 元のスペース（幅約413px・4:5）に対して面積が半分になる幅 */
+  .hero__figure {
+    width: 18rem;
+  }
+
+  .hero__figure img {
+    width: 100%;
+    height: auto;
+  }
+
+  /* 自己紹介 -------------------------------------------------- */
+  .intro__heading {
+    max-width: var(--w-prose);
+    margin-bottom: 1.4rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--c-border);
+  }
+
+  .intro {
+    max-width: var(--w-prose);
+    border-left: 3px solid var(--c-accent);
+    padding-left: 1.6rem;
+  }
+
+  /*
+   * ヘッダーの屋号と同じ大きさ（--fs-brand を共有）。
+   * 詳細度で `.intro p` に負けないよう `.intro` を前置している。
+   */
+  .intro .intro__name {
+    font-family: var(--font-serif);
+    font-size: var(--fs-brand);
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    margin-bottom: 1.1rem;
+  }
+
+  .intro__credential {
+    font-family: var(--font-sans);
+    font-size: 0.85rem;
+    font-weight: 400;
+    color: var(--c-text-muted);
+    letter-spacing: 0.02em;
+  }
+
+  .intro p {
+    font-size: 0.95rem;
+  }
+
+  .intro__link {
+    margin-bottom: 0;
+  }
+
+  /* 最近の記事 ------------------------------------------------ */
+  .articles {
+    list-style: none;
+    padding: 0;
+    margin: 2rem 0;
+    border-top: 1px solid var(--c-border);
+  }
+
+  .articles li {
+    margin: 0;
+    border-bottom: 1px solid var(--c-border);
+  }
+
+  .articles a {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 1.5rem;
+    align-items: baseline;
+    padding: 1.1rem 0;
+    text-decoration: none;
+    color: var(--c-text);
+  }
+
+  .articles a:hover .articles__title {
+    color: var(--c-accent);
+  }
+
+  .articles__title {
+    font-family: var(--font-serif);
+    font-size: 1.02rem;
+  }
+
+  .articles__date {
+    font-size: 0.78rem;
+    white-space: nowrap;
+  }
+
+  @media (max-width: 860px) {
+    .hero__inner {
+      grid-template-columns: 1fr;
+      gap: 2.5rem;
+      padding-block: 3rem;
+    }
+
+    .hero__figure {
+      width: 14rem;
+    }
+
+    .articles a {
+      grid-template-columns: 1fr;
+      gap: 0.3rem;
+    }
+  }
+
+  /* ヘッダーの屋号と同じブレークポイント（640px）で一段小さくする */
+  @media (max-width: 640px) {
+    .intro .intro__name {
+      font-size: var(--fs-brand-sp);
+    }
+  }
+</style>

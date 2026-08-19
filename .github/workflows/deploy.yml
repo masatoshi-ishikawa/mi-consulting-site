@@ -1,0 +1,62 @@
+name: Deploy to GitHub Pages
+
+# mainへのpushで自動ビルド＆公開する。
+# 手動実行（Actionsタブの Run workflow）も可能にしてある。
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+# GitHub Pagesへの公開に必要な権限。
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# 公開処理は同時に1つだけ。実行中のものは中断せず、順番に流す。
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: リポジトリを取得
+        uses: actions/checkout@v7
+
+      - name: Node.jsを準備
+        uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: npm
+
+      # package-lock.json のとおりに入れる（勝手に更新させない）
+      - name: 依存パッケージをインストール
+        run: npm ci
+
+      - name: サイトをビルド
+        run: npm run build
+
+      # public/CNAME が dist/CNAME としてコピーされる。
+      # これが無いと独自ドメインの設定が外れるため、ここで存在を確認する。
+      - name: CNAMEが含まれているか確認
+        run: |
+          test -f dist/CNAME || { echo "dist/CNAME がありません"; exit 1; }
+          echo "CNAME: $(cat dist/CNAME)"
+
+      - name: ビルド結果をアップロード
+        uses: actions/upload-pages-artifact@v5
+        with:
+          path: ./dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: GitHub Pagesへ公開
+        id: deployment
+        uses: actions/deploy-pages@v5

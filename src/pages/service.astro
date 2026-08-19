@@ -1,0 +1,154 @@
+---
+import { EMAIL } from '../consts';
+import Base from '../layouts/Base.astro';
+
+// Googleフォーム。末尾の usp=publish-editor は公開直後の編集画面用パラメータのため外している。
+const FORM_URL =
+  'https://docs.google.com/forms/d/e/1FAIpQLScYBD4cgBUCLBIgnl8UVt9P_ni_NOGTwA76u7l9RMWZgrS39g/viewform';
+---
+
+<Base
+  title="サービス案内"
+  description="初回相談は60分・10,000円（税込）。決算書のご用意は不要です。現状を伺い、金融機関から貴社がどう見えているかを整理してお伝えします。"
+>
+  <div class="container prose page">
+    <h1>サービス案内</h1>
+
+    <section>
+      <h2>こんな場面でお役に立てます</h2>
+      <ul class="cases">
+        <li>
+          <strong>売上は伸びているのに、資金繰りが年々きつくなる。</strong>
+          成長に必要な運転資金がどれだけ増えているか、どこまで調達枠を確保しておくべきかを整理します
+        </li>
+        <li>
+          <strong>設備投資や拠点展開を考えている。</strong>
+          どの金融機関に、どんな順序で、何を見せて持ち込むか。投資計画と資金調達を一体で設計します
+        </li>
+        <li>
+          <strong>補助金を使いたいが、資金の手当てが読めない。</strong>
+          補助金は後払いです。つなぎ資金と自己負担分をどう調達するかまで含めて組み立てます
+        </li>
+        <li>
+          <strong>金融機関との付き合いが、なんとなくで続いている。</strong>
+          いまの取引構成が事業の規模と成長に見合っているか、どの金融機関との関係を厚くすべきかを診断し、関係の強化と再構築を支援します
+        </li>
+        <li>
+          <strong>決算のたびに数字を説明しているが、伝わっている手応えがない。</strong>
+          貴社が金融機関からどう見えているか、金融機関が何を知りたがっているかを踏まえて、説明資料と話し方を組み立て直します
+        </li>
+        <li>
+          <strong>財務を任せられる人が社内にいない。</strong>
+          社長が資金の判断を一人で背負っている状態を、外部から支えます
+        </li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>支援の進め方</h2>
+
+      <div class="step step--entry">
+        <h3>まずは、ご相談ください</h3>
+        <p class="price">［初回相談］ 60分・10,000円（税込）</p>
+        <p>
+          現状をお聞きし、金融機関から貴社がどう見えているか、次に何から手をつけるべきかを整理してお伝えします。<strong
+            >決算書のご用意は不要です。</strong
+          > お話を伺うだけでも、論点の輪郭は見えてきます。
+        </p>
+        <p>面談後、その日の議論を整理したメモをお送りします。</p>
+        <p>
+          この時間は、私の見立てが役に立つかどうか、そして相性を確かめていただく場です。継続的な支援をご希望の場合のみ、次のご提案をします。
+        </p>
+      </div>
+
+      <div class="step">
+        <h3>現状を診断する</h3>
+        <p>
+          決算書と借入明細を拝見し、日頃の取引ぶりやコミュニケーションの状況もお聞きした上で、金融機関から見た貴社の評価、取引金融機関の構成、資金繰りの構造、借入条件の妥当性といった観点から現状を整理し、ご報告します。
+        </p>
+        <p>
+          「なんとなく大丈夫だと思っていたが、本当は」あるいは「心配していたが、実は問題なかった」——金融機関経験者が数字で見ると、経営者の実感とは違う景色が見えることがあります。
+        </p>
+      </div>
+
+      <div class="step">
+        <h3>実行を伴走する</h3>
+        <p>
+          診断で見えた課題に、数か月から継続的に取り組みます。資金繰り管理の仕組みづくり、投資と補助金を含む調達計画の設計、金融機関向け説明資料の作成、面談への同席、取引金融機関の見直しなど、必要なテーマを組み合わせます。
+        </p>
+        <p>
+          計画や資料を作って終わりにはしません。実行の場に立ち会い、金融機関との対話の前線に立ちます。
+        </p>
+        <p>
+          その後も継続的に財務を見てほしいというご要望には、月次の顧問というかたちでお応えしています。
+        </p>
+      </div>
+    </section>
+
+    <section class="apply">
+      <h2>初回相談のお申し込み</h2>
+      <p>
+        <a class="button" href={FORM_URL} target="_blank" rel="noopener">
+          申込みフォームへ
+        </a>
+      </p>
+      <p class="muted note">
+        初回相談はオンラインまたは訪問・対面（都内近郊の場合）で承ります。
+      </p>
+      <p class="muted note">
+        講演・執筆のご依頼、その他のお問い合わせは、メール（<a href={`mailto:${EMAIL}`}
+          >{EMAIL}</a
+        >）にてご連絡ください。
+      </p>
+    </section>
+  </div>
+</Base>
+
+<style>
+  .page {
+    padding-block: 3.5rem;
+  }
+
+  .page section {
+    margin-top: 3.5rem;
+  }
+
+  .page h2 {
+    margin-bottom: 1.4rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--c-border);
+  }
+
+  .cases li {
+    margin-bottom: 1rem;
+  }
+
+  .step {
+    margin-bottom: 2.5rem;
+  }
+
+  .step h3 {
+    margin-bottom: 0.9rem;
+  }
+
+  .step--entry {
+    background: var(--c-bg-subtle);
+    border-left: 3px solid var(--c-accent);
+    padding: 1.6rem 1.8rem 1.2rem;
+  }
+
+  .price {
+    font-family: var(--font-serif);
+    font-size: 1.2rem;
+    margin-bottom: 1.2rem;
+  }
+
+  .apply .button {
+    margin-top: 0.5rem;
+  }
+
+  .note {
+    font-size: 0.9rem;
+    margin-top: 1.2rem;
+  }
+</style>

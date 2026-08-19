@@ -1,0 +1,163 @@
+---
+import FormattedDate from '../components/FormattedDate.astro';
+import Phrase from '../components/Phrase.astro';
+import { type PillarId } from '../consts';
+import Base from './Base.astro';
+
+interface RelatedLink {
+  slug: string;
+  title: string;
+  basicId?: string;
+}
+
+interface Props {
+  title: string;
+  description: string;
+  pubDate: Date;
+  updatedDate?: Date;
+  pillar: PillarId;
+  basicId?: string;
+  /** 応用記事なら、親となる基礎記事 */
+  parent?: RelatedLink;
+  /** 基礎記事なら、ぶら下がる応用記事 */
+  derived?: RelatedLink[];
+}
+
+const { title, description, pubDate, updatedDate, parent, derived = [] } =
+  Astro.props;
+---
+
+<Base title={title} description={description}>
+  <article class="container prose article">
+    <header class="article__head">
+      {/* 6つの柱は当面サイトに記載しない方針のため、分類は表示しない */}
+      <h1><Phrase text={title} breakAfterDash /></h1>
+      <p class="dates muted">
+        <FormattedDate date={pubDate} />
+        {updatedDate && <span> ／ 更新 <FormattedDate date={updatedDate} /></span>}
+      </p>
+    </header>
+
+    {
+      parent && (
+        <aside class="relation relation--parent">
+          <p class="relation__label">この記事の前提となる基礎記事</p>
+          <a href={`/articles/${parent.slug}/`}>
+            {parent.basicId && <span class="badge">{parent.basicId}</span>}
+            {parent.title}
+          </a>
+        </aside>
+      )
+    }
+
+    <div class="article__body">
+      <slot />
+    </div>
+
+    {
+      derived.length > 0 && (
+        <aside class="relation relation--children">
+          <p class="relation__label">この基礎記事から派生する記事</p>
+          <ul>
+            {derived.map((c) => (
+              <li>
+                <a href={`/articles/${c.slug}/`}>{c.title}</a>
+              </li>
+            ))}
+          </ul>
+        </aside>
+      )
+    }
+
+    <footer class="article__foot">
+      <a class="button button--ghost" href="/articles/">記事一覧へ戻る</a>
+    </footer>
+  </article>
+</Base>
+
+<style>
+  .article {
+    padding-block: 3.5rem 1rem;
+  }
+
+  .article__head {
+    padding-bottom: 1.8rem;
+    border-bottom: 1px solid var(--c-border);
+    margin-bottom: 2.5rem;
+  }
+
+  /* 見出しが大きすぎると1行の文字数が減るため、本文ページより控えめにする */
+  .article__head h1 {
+    font-size: clamp(1.4rem, 1.15rem + 1.1vw, 1.85rem);
+    margin-bottom: 0.9rem;
+  }
+
+  /*
+   * スマホでは 1.35rem に固定する。
+   * 既定の計算値（375px幅で22.5px）だとタイトルが3行に割れることがあり、
+   * わずか1px下げるだけで2行に収まる。見た目の差はほとんど出ない。
+   */
+  @media (max-width: 640px) {
+    .article__head h1 {
+      font-size: 1.35rem;
+    }
+  }
+
+  .dates {
+    font-size: 0.82rem;
+    margin: 0;
+  }
+
+  .badge {
+    display: inline-block;
+    background: var(--c-accent);
+    color: #fff;
+    font-size: 0.7rem;
+    letter-spacing: 0.08em;
+    padding: 0.1rem 0.45rem;
+    border-radius: 2px;
+    margin-right: 0.5rem;
+    vertical-align: 0.05em;
+  }
+
+  .article__body :global(h2) {
+    margin-top: 3rem;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--c-border);
+  }
+
+  .article__body :global(h3) {
+    margin-top: 2.2rem;
+    margin-bottom: 0.8rem;
+  }
+
+  .relation {
+    background: var(--c-bg-subtle);
+    border-left: 3px solid var(--c-accent);
+    padding: 1.1rem 1.3rem;
+    margin-block: 2.5rem;
+  }
+
+  .relation__label {
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    color: var(--c-text-faint);
+    margin: 0 0 0.5rem;
+  }
+
+  .relation a {
+    font-size: 0.98rem;
+  }
+
+  .relation ul {
+    margin: 0;
+    padding-left: 1.2em;
+  }
+
+  .article__foot {
+    margin-top: 4rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--c-border);
+  }
+</style>

@@ -1,0 +1,124 @@
+---
+import { NAV_ITEMS, OFFICE_NAME, TAGLINE } from '../consts';
+
+// 全ページ共通の主看板。各ページ内で名前・タグラインは繰り返さない。
+const path = Astro.url.pathname;
+
+const isCurrent = (href: string) =>
+  href === '/' ? path === '/' : path.startsWith(href);
+---
+
+<header class="site-header">
+  <div class="container inner">
+    <a class="brand" href="/">
+      <span class="brand__name">{OFFICE_NAME}</span>
+      <span class="brand__tagline">{TAGLINE}</span>
+    </a>
+
+    <nav aria-label="サイト内ナビゲーション">
+      <ul>
+        {
+          NAV_ITEMS.map((item) => (
+            <li>
+              <a
+                href={item.href}
+                aria-current={isCurrent(item.href) ? 'page' : undefined}
+              >
+                {item.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<style>
+  .site-header {
+    border-bottom: 1px solid var(--c-border);
+    background: var(--c-bg);
+  }
+
+  .inner {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1.5rem;
+    padding-block: 1.4rem;
+    flex-wrap: wrap;
+  }
+
+  .brand {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+    line-height: 1.4;
+  }
+
+  .brand__name {
+    display: block;
+    font-family: var(--font-serif);
+    font-size: var(--fs-brand);
+    font-weight: 600;
+    letter-spacing: 0.06em;
+  }
+
+  .brand__tagline {
+    display: block;
+    font-size: 0.82rem;
+    color: var(--c-text-muted);
+    letter-spacing: 0.04em;
+    margin-top: 0.2rem;
+  }
+
+  nav ul {
+    display: flex;
+    gap: 1.6rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  nav li {
+    margin: 0;
+  }
+
+  nav a {
+    display: block;
+    padding-bottom: 0.3rem;
+    font-size: 0.92rem;
+    color: var(--c-text);
+    text-decoration: none;
+    border-bottom: 2px solid transparent;
+    letter-spacing: 0.04em;
+  }
+
+  nav a:hover {
+    color: var(--c-accent);
+  }
+
+  nav a[aria-current='page'] {
+    border-bottom-color: var(--c-accent);
+    color: var(--c-accent);
+  }
+
+  @media (max-width: 640px) {
+    .inner {
+      align-items: flex-start;
+      gap: 1rem;
+    }
+
+    .brand__name {
+      font-size: var(--fs-brand-sp);
+    }
+
+    nav ul {
+      gap: 1.1rem;
+    }
+
+    nav a {
+      font-size: 0.85rem;
+    }
+  }
+</style>

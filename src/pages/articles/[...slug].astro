@@ -1,0 +1,47 @@
+---
+import { type CollectionEntry, getCollection, render } from 'astro:content';
+
+import Article from '../../layouts/Article.astro';
+
+export async function getStaticPaths() {
+  const articles = await getCollection('articles', ({ data }) => !data.draft);
+
+  return articles.map((article) => {
+    const parentEntry = article.data.parent
+      ? articles.find((a) => a.id === article.data.parent)
+      : undefined;
+
+    const derived = articles
+      .filter((a) => a.data.parent === article.id)
+      .map((a) => ({ slug: a.id, title: a.data.title, basicId: a.data.basicId }));
+
+    return {
+      params: { slug: article.id },
+      props: {
+        article,
+        parent: parentEntry
+          ? {
+              slug: parentEntry.id,
+              title: parentEntry.data.title,
+              basicId: parentEntry.data.basicId,
+            }
+          : undefined,
+        derived,
+      },
+    };
+  });
+}
+
+interface Props {
+  article: CollectionEntry<'articles'>;
+  parent?: { slug: string; title: string; basicId?: string };
+  derived: { slug: string; title: string; basicId?: string }[];
+}
+
+const { article, parent, derived } = Astro.props;
+const { Content } = await render(article);
+---
+
+<Article {...article.data} parent={parent} derived={derived}>
+  <Content />
+</Article>

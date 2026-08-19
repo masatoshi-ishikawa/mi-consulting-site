@@ -1,0 +1,108 @@
+---
+import { getCollection } from 'astro:content';
+
+import FormattedDate from '../../components/FormattedDate.astro';
+import Base from '../../layouts/Base.astro';
+import Phrase from '../../components/Phrase.astro';
+
+// 記事数が少ないうちは6つの柱を見せず、単純に並べる。
+// 基礎記事（K番号あり）を先頭に、その中はK番号順。以降は新しい順。
+const articles = (await getCollection('articles', ({ data }) => !data.draft)).sort(
+  (a, b) => {
+    const ak = a.data.basicId;
+    const bk = b.data.basicId;
+    if (ak && bk) return ak.localeCompare(bk);
+    if (ak) return -1;
+    if (bk) return 1;
+    return b.data.pubDate.valueOf() - a.data.pubDate.valueOf();
+  },
+);
+---
+
+<Base
+  title="記事一覧"
+  description="資金繰りと資金調達の基礎を、金融機関で融資に携わった立場から書いています。"
+>
+  <div class="container page">
+    <h1>記事一覧</h1>
+
+    {
+      articles.length === 0 ? (
+        <p class="empty">準備中です。</p>
+      ) : (
+        <ul class="list">
+          {articles.map((a) => (
+            <li>
+              <a href={`/articles/${a.id}/`}>
+                <span class="list__title"><Phrase text={a.data.title} /></span>
+                <span class="list__desc muted"><Phrase text={a.data.description} /></span>
+                <span class="list__date muted">
+                  <FormattedDate date={a.data.pubDate} />
+                </span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      )
+    }
+  </div>
+</Base>
+
+<style>
+  .page {
+    padding-block: 3.5rem;
+  }
+
+  .page h1 {
+    margin-bottom: 2.5rem;
+  }
+
+  .list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border-top: 1px solid var(--c-border);
+    max-width: 52rem;
+  }
+
+  .list li {
+    margin: 0;
+    border-bottom: 1px solid var(--c-border);
+  }
+
+  .list a {
+    display: block;
+    padding: 1.4rem 0;
+    text-decoration: none;
+    color: var(--c-text);
+  }
+
+  .list a:hover .list__title {
+    color: var(--c-accent);
+  }
+
+  .list__title {
+    display: block;
+    font-family: var(--font-serif);
+    font-size: 1.12rem;
+    line-height: 1.6;
+    margin-bottom: 0.5rem;
+  }
+
+  .list__desc {
+    display: block;
+    font-size: 0.88rem;
+    line-height: 1.8;
+  }
+
+  .list__date {
+    display: block;
+    font-size: 0.75rem;
+    margin-top: 0.6rem;
+  }
+
+  .empty {
+    font-size: 0.9rem;
+    color: var(--c-text-faint);
+  }
+</style>
