@@ -29,6 +29,16 @@ const ogImage = image ? new URL(image, Astro.site) : undefined;
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <meta name="generator" content={Astro.generator} />
 
+{/*
+  Google Search Console の所有権確認用。
+  Search Console側が このタグの有無を定期的に見に来るため、
+  確認が通ったあとも消さないこと（消すと所有権が外れる）。
+*/}
+<meta
+  name="google-site-verification"
+  content="3Lpc0TcuGN-UoHmaWnODdMlEgqaOlaUzeLhBgyO5SCg"
+/>
+
 <title>{fullTitle}</title>
 <meta name="description" content={description} />
 <link rel="canonical" href={canonicalURL} />
