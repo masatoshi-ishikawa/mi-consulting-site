@@ -8,6 +8,11 @@
 - ドメイン: mi-consulting.biz（GitHub Pagesで公開）
 - 技術構成: Astro（静的サイト）／記事はmarkdownで管理
 
+**技術的な手順・仕組み・禁止事項は [OPERATIONS.md](OPERATIONS.md) を参照。**
+記事の追加手順、frontmatterのスキーマ、ディレクトリ構成、画像の扱い、
+改行制御（BudouX）の仕組み、触ってはいけない箇所をまとめてある。
+このファイル（CLAUDE.md）は方針、OPERATIONS.mdは手順、という役割分担。
+
 ## 表記ルール
 
 - 主看板は屋号: **石川雅敏経営コンサルティング事務所**
