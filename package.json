@@ -13,7 +13,10 @@
     "preview": "astro preview",
     "check": "astro check",
     "astro": "astro",
-    "dev:lan": "astro dev --host"
+    "dev:lan": "astro dev --host",
+    "predev": "node scripts/fix-svg.mjs",
+    "predev:lan": "node scripts/fix-svg.mjs",
+    "prebuild": "node scripts/fix-svg.mjs"
   },
   "dependencies": {
     "@astrojs/markdown-satteri": "^0.3.5",
