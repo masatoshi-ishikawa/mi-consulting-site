@@ -83,6 +83,7 @@ draft: false
 ### 資金繰りの基礎
 
 - [資金繰りとは何か——お金を「取っておく」という仕事](/articles/k1_shikinguri-toha)
+- [黒字倒産はなぜ起きるか——利益とお金は別物](/articles/k3_kuroji-tousan)
 
 資金繰りの考え方を、いくつかの記事に分けて今後掲載していきます。
 
