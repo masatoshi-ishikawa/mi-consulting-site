@@ -1,4 +1,4 @@
-import { segment, KEEP_TOGETHER_BY_LENGTH } from './budoux-core.mjs';
+import { segment, KEEP_TOGETHER_BY_LENGTH, KEEP_TOGETHER_PATTERNS } from './budoux-core.mjs';
 
 /**
  * markdownを整えるSätteri hastプラグイン。
@@ -113,6 +113,22 @@ function addClass(properties, name) {
  * 保護語だけを折り返し禁止にする（記事本文）
  * ------------------------------------------------------------------ */
 
+/** 位置指定で照合できるように、保護パターンを sticky（y フラグ）にしておく */
+const STICKY_PATTERNS = KEEP_TOGETHER_PATTERNS.map((p) => new RegExp(p.source, 'y'));
+
+/** rest の i 文字目から始まる保護語（または保護パターンの一致）を返す。なければ null */
+function protectedAt(rest, i) {
+  for (const term of KEEP_TOGETHER_BY_LENGTH) {
+    if (rest.startsWith(term, i)) return term;
+  }
+  for (const re of STICKY_PATTERNS) {
+    re.lastIndex = i;
+    const m = re.exec(rest);
+    if (m) return m[0];
+  }
+  return null;
+}
+
 /** 常に配列を返す内部処理。変更があったかは state に記録する。 */
 function wrapWalk(children, state) {
   return children.flatMap((child) => {
@@ -130,14 +146,13 @@ function wrapWalk(children, state) {
     let rest = child.value;
     outer: while (rest.length > 0) {
       for (let i = 0; i < rest.length; i++) {
-        for (const term of KEEP_TOGETHER_BY_LENGTH) {
-          if (rest.startsWith(term, i)) {
-            if (i > 0) pieces.push({ type: 'text', value: rest.slice(0, i) });
-            pieces.push(el('span', [{ type: 'text', value: term }], { className: ['nobr'] }));
-            rest = rest.slice(i + term.length);
-            state.changed = true;
-            continue outer;
-          }
+        const hit = protectedAt(rest, i);
+        if (hit) {
+          if (i > 0) pieces.push({ type: 'text', value: rest.slice(0, i) });
+          pieces.push(el('span', [{ type: 'text', value: hit }], { className: ['nobr'] }));
+          rest = rest.slice(i + hit.length);
+          state.changed = true;
+          continue outer;
         }
       }
       pieces.push({ type: 'text', value: rest });

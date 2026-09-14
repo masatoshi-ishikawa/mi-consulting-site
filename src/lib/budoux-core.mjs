@@ -48,11 +48,18 @@ export const KEEP_TOGETHER = [
   'もう一段',
   // 複合動詞（「身に／つけた」「積み／上がっている」のように割られる）
   '身につけ',
+  '立て替え',
   // 長い形を先に置く必要はない（長さ順に並べ替えて判定するため）。
   // 「積み上がって」だけだと後ろの「いる」との間で切れる余地が残るため両方入れる。
   '積み上がっている',
   '積み上がって',
 ];
+
+/**
+ * 内部で改行させない形（正規表現）。語として列挙しきれないものに使う。
+ * 実例:「1か／月分」のように、数字と単位の間で割れるのを防ぐ。
+ */
+export const KEEP_TOGETHER_PATTERNS = [/[0-9０-９]+か月分?/];
 
 /** 文節配列 → 区切り位置（文字オフセット）の配列 */
 function toBoundaries(parts) {
@@ -75,6 +82,11 @@ function forbiddenPositions(text) {
       if (at === -1) break;
       for (let k = at + 1; k < at + term.length; k++) forbidden.add(k);
       from = at + 1;
+    }
+  }
+  for (const pattern of KEEP_TOGETHER_PATTERNS) {
+    for (const m of text.matchAll(new RegExp(pattern.source, 'g'))) {
+      for (let k = m.index + 1; k < m.index + m[0].length; k++) forbidden.add(k);
     }
   }
   return forbidden;
