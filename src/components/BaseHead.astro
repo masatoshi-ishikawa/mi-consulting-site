@@ -29,6 +29,25 @@ const ogImage = image ? new URL(image, Astro.site) : undefined;
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <meta name="generator" content={Astro.generator} />
 
+{/* Google アナリティクス（GA4）。本番ビルドのときだけ出力する。 */}
+{
+  import.meta.env.PROD && (
+    <>
+      <script
+        is:inline
+        async
+        src="https://www.googletagmanager.com/gtag/js?id=G-2JE1ECX70Z"
+      />
+      <script is:inline>
+        {`window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-2JE1ECX70Z');`}
+      </script>
+    </>
+  )
+}
+
 {/*
   Google Search Console の所有権確認用。
   Search Console側が このタグの有無を定期的に見に来るため、
