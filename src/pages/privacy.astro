@@ -1,0 +1,39 @@
+---
+import { getEntry, render } from 'astro:content';
+
+import Base from '../layouts/Base.astro';
+
+// 文章は src/content/pages/privacy-policy.md で管理する
+const page = await getEntry('pages', 'privacy-policy');
+const { Content } = await render(page!);
+const { title, description } = page!.data;
+---
+
+<Base title={title} description={description}>
+  <div class="container prose page">
+    <h1>{title}</h1>
+
+    <Content />
+  </div>
+</Base>
+
+<style>
+  .page {
+    padding-block: 3.5rem;
+  }
+
+  /*
+   * 以下は markdown から生成される要素が対象のため :global が必要。
+   * （Astroのスコープ付きスタイルは生成物には当たらない）
+   */
+  .page :global(h2) {
+    margin-top: 3rem;
+    margin-bottom: 1.2rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--c-border);
+  }
+
+  .page :global(li) {
+    margin-bottom: 0.6rem;
+  }
+</style>
