@@ -207,8 +207,25 @@ table {
 
 /*
  * 3列の表は、最終列に説明文が入ることが多いので広めに取る。
- * 2列や4列以上の表は均等割りのまま。
+ * 2列の表は、1列目が項目名・2列目が説明文になるので1列目を詰める。
+ * 4列以上の表は均等割りのまま。
  */
+.table-scroll table tr > *:first-child:nth-last-child(2) {
+  width: 22%;
+}
+
+@media (max-width: 640px) {
+  /* 狭い画面では22%だと項目名が折り返すので、5文字が収まる幅で固定する */
+  .table-scroll table tr > *:first-child:nth-last-child(2) {
+    width: 6.8rem;
+  }
+}
+
+/* 2列の表は狭い画面でも収まるので、横スクロールさせずに折り返す */
+.table-scroll table:has(tr > *:first-child:nth-last-child(2)) {
+  min-width: 0;
+}
+
 .table-scroll table tr > *:first-child:nth-last-child(3) {
   width: 26%;
 }
