@@ -238,6 +238,15 @@ table {
   width: 37%;
 }
 
+/*
+ * frontmatter で tableColumns: equal を指定した記事は、上の配分を打ち消して均等割りにする。
+ * 2列の表はスマホ幅の固定幅（6.8rem）を優先したいので対象外。
+ */
+.tables-equal .table-scroll table tr > *:first-child:nth-last-child(n + 3),
+.tables-equal .table-scroll table tr > *:first-child:nth-last-child(n + 3) ~ * {
+  width: auto;
+}
+
 .table-scroll th {
   white-space: nowrap;
 }

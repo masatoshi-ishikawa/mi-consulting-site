@@ -21,14 +21,21 @@ interface Props {
   parent?: RelatedLink;
   /** 基礎記事なら、ぶら下がる応用記事 */
   derived?: RelatedLink[];
+  /** 'equal' なら表の列幅を均等にする */
+  tableColumns?: 'equal';
 }
 
-const { title, description, pubDate, updatedDate, parent, derived = [] } =
+const { title, description, pubDate, updatedDate, parent, derived = [], tableColumns } =
   Astro.props;
 ---
 
 <Base title={title} description={description}>
-  <article class="container prose article">
+  <article
+    class:list={[
+      'container prose article',
+      { 'tables-equal': tableColumns === 'equal' },
+    ]}
+  >
     <header class="article__head">
       {/* 6つの柱は当面サイトに記載しない方針のため、分類は表示しない */}
       <h1><Phrase text={title} breakAfterDash /></h1>

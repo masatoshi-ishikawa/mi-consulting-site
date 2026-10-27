@@ -23,6 +23,8 @@ const articles = defineCollection({
     basicId: z.string().optional(),
     /** 応用記事から親となる基礎記事のスラッグを指定し、内部リンクの親子構造をつくる。 */
     parent: z.string().optional(),
+    /** 'equal' で、その記事の表の列幅を均等にする（既定は列数ごとの配分。global.css参照）。 */
+    tableColumns: z.enum(['equal']).optional(),
     /** trueの間はビルドに含めない。 */
     draft: z.boolean().default(false),
   }),
