@@ -9,8 +9,8 @@ import { budouxHeadings } from './src/lib/budoux-headings.mjs';
 // https://astro.build/config
 export default defineConfig({
   site: 'https://mi-consulting.biz',
-  // 記事本文の内部リンクに末尾スラッシュの有無が混在するため、どちらでも解決させる
-  trailingSlash: 'ignore',
+  // 内部リンクは末尾スラッシュ付きに統一する。スラッシュなしのリンクは開発サーバーで404になり、書き間違いに気づける
+  trailingSlash: 'always',
   integrations: [sitemap()],
   build: {
     format: 'directory',
